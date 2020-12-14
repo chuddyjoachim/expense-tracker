@@ -2,21 +2,21 @@ import React,{useState} from "react";
 import "./Subform.scss";
 
 let initialState = 0;
-export  function SubForm({title,btnColor,amt,tle,setArr}) {
+export  function SubForm({title,btnColor,amt,tle,setArr,incomeAmount,incomeTitle}) {
   return (
     <>
       <form id="form__" action="">
         <div className="wrapper">
           <h3 className="title">{title}</h3>
           <div className="inp_bx">
-            <input type="number" name="" placeholder="Amount" id="" 
+            <input type="number" value={incomeAmount} name="" placeholder="Amount" id="" 
             onChange={(e)=>{
               amt(e)
             }}
               />
           </div>
           <div className="inp_bx">
-            <input type="text" name="" placeholder="Detail" id="" 
+            <input type="text" value={incomeTitle} name="" placeholder="Detail" id="" 
             onChange={(e)=>{
               tle(e)
             }}
