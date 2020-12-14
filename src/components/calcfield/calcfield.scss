@@ -1,0 +1,56 @@
+.wrapset_ {
+  position: relative;
+  width: 33.333%;
+  //   border: 1px solid red;
+  height: 300px;
+  & .top__ {
+    position: relative;
+    width: 100%;
+    & .dv_hld {
+      position: relative;
+      display: flex;
+      //   flex-flow: row nowrap;
+      flex-direction: row;
+      align-items: center;
+      width: 100%;
+      //   border: 1px solid black;
+      & .sng__ {
+        position: relative;
+        width: 100%;
+        & .wrap__ {
+          position: relative;
+          display: flex;
+          flex-flow: column nowrap;
+          align-items: center;
+          width: 100%;
+          & .title__ {
+            position: relative;
+            font-size: 1.3rem;
+            margin: 0.2rem 0;
+          }
+          & .icon {
+            height: 80px;
+            // border: 1px solid green;
+            width: 100%;
+            & img {
+              display: block;
+              max-width: 100%;
+              max-height: 100%;
+            }
+          }
+          & .int {
+            position: relative;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+            & div {
+              position: relative;
+              margin-right: 0.3rem;
+              font-size: inherit;
+            }
+          }
+        }
+      }
+    }
+  }
+}
