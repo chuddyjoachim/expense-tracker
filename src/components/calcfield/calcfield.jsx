@@ -2,7 +2,7 @@ import React from 'react'
 import money from '../../svg/money-transfer.svg'
 import './calcfield.scss'
 
- function Calcfield({title, imgSrc, amnt}) {
+ function Calcfield({title, imgSrc, amnt, amtCollor}) {
     return (
         <>
         <div className="wrapset_">
@@ -16,12 +16,10 @@ import './calcfield.scss'
                         <div className="icon">
                             <img src={imgSrc} alt={imgSrc}/>
                         </div>
-                        <h4 className="int">
+                        <h4 className={`int ${amtCollor}`}>
                             <div>$</div> {
                                 amnt?
-                                amnt.reduce((x,y)=>{
-                                   return x += parseInt(y.amount)
-                                },0): ""
+                                (amnt): ""
                             }
                         </h4>
                        </div>
