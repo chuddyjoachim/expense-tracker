@@ -5,7 +5,6 @@ import { SubForm } from "./components/formfield/SubForm";
 import money from "./svg/money-transfer.svg";
 import balance from "./svg/balance.svg";
 import expenses from "./svg/expenses.svg";
-import pen from "./svg/pen.svg";
 
 function App() {
   const [
@@ -55,6 +54,7 @@ function App() {
 
   const allIncome = () => {
     let single = {
+      key: key_(),
       amount: incomeAmount,
       title: incomeTitle,
     };
@@ -70,6 +70,7 @@ function App() {
 
   const allExpenses = () => {
     let single = {
+      key: key_(),
       amount: expenseAmount,
       title: expenseTitle,
     };
@@ -122,6 +123,51 @@ function App() {
     return res;
   };
 
+  const incomeEdit = (key_) => {
+    const ed_ = incomeArray.filter((one) => one.key === key_);
+    const { amount, title } = ed_[0];
+    const rest = incomeArray.filter((one) => one.key !== key_);
+
+    setincome((_) => ({
+      ..._,
+      incomeArray: rest,
+      incomeAmount: amount,
+      incomeTitle: title,
+    }));
+  };
+
+  const expenseEdit = (key_) => {
+    const ed_ = expenseArray.filter((one) => one.key === key_);
+    const { amount, title } = ed_[0];
+    const rest = expenseArray.filter((one) => one.key !== key_);
+
+    setincome((_) => ({
+      ..._,
+      expenseArray: rest,
+      expenseAmount: amount,
+      expenseTitle: title,
+    }));
+  };
+
+  // Delete income
+  const incomeDelete = (key_) => {
+    const remain = incomeArray.filter((one) => one.key !== key_);
+
+    setincome((_) => ({
+      ..._,
+      incomeArray: remain,
+    }));
+  };
+
+  const expenseDelete = (key_) => {
+    const remain = expenseArray.filter((one) => one.key !== key_);
+
+    setincome((_) => ({
+      ..._,
+      expenseArray: remain,
+    }));
+  };
+
   return (
     <>
       <div className="container__">
@@ -130,10 +176,6 @@ function App() {
         </header>
         <div className="wrapset__">
           <div className="sd_inex">
-            <h1>{incomeAmount}</h1>
-            <h1>{incomeTitle}</h1>
-            <h1>{expenseAmount}</h1>
-            <h1>{expenseTitle}</h1>
             <div className="all_hld">
               <SubForm
                 title="Enter income Amount and Description"
@@ -184,7 +226,7 @@ function App() {
                       <h3 className="title">Income List</h3>
                       {incomeArray.map((x, index) => {
                         return (
-                          <div className="sng_vt" key={key_()}>
+                          <div className="sng_vt" key={x.key}>
                             <div className="mn_ct_">
                               <div className="id">{index + 1}</div>
                               <div className="cont__r">
@@ -195,9 +237,14 @@ function App() {
                               </div>
                             </div>
                             <div className="tb_icn__">
-                              <button className="bx_btn ">
+                              <button
+                                className="bx_btn "
+                                onClick={() => {
+                                  incomeEdit(x.key);
+                                }}
+                              >
                                 <svg
-                                  class="icn__i yellow_"
+                                  className="icn__i yellow_"
                                   viewBox="0 0 24 24"
                                   fill="currentColor"
                                   xmlns="../../external.html?link=http://www.w3.org/2000/svg"
@@ -205,11 +252,16 @@ function App() {
                                   <path d="M19 20H5a1 1 0 0 0 0 2h14a1 1 0 0 0 0-2z"></path>
                                   <path d="M5 18h.09l4.17-.38a2 2 0 0 0 1.21-.57l9-9a1.92 1.92 0 0 0-.07-2.71L16.66 2.6A2 2 0 0 0 14 2.53l-9 9a2 2 0 0 0-.57 1.21L4 16.91a1 1 0 0 0 .29.8A1 1 0 0 0 5 18zM15.27 4L18 6.73l-2 1.95L13.32 6zm-8.9 8.91L12 7.32l2.7 2.7-5.6 5.6-3 .28z"></path>
                                 </svg>
-                                {/* <img class="icn__i" src={pen} alt="" /> */}
+                                {/* <img className="icn__i" src={pen} alt="" /> */}
                               </button>
-                              <button className="bx_btn ">
+                              <button
+                                className="bx_btn"
+                                onClick={() => {
+                                  incomeDelete(x.key);
+                                }}
+                              >
                                 <svg
-                                  class="icn__i red_"
+                                  className="icn__i red_"
                                   viewBox="0 0 24 24"
                                   fill="currentColor"
                                   xmlns="../../external.html?link=http://www.w3.org/2000/svg"
@@ -235,7 +287,7 @@ function App() {
                       <h3 className="title">Expense List</h3>
                       {expenseArray.map((x, index) => {
                         return (
-                          <div className="sng_vt" key={key_()}>
+                          <div className="sng_vt" key={x.key}>
                             <div className="mn_ct_">
                               <div className="id">{index + 1}</div>
                               <div className="cont__r">
@@ -244,9 +296,14 @@ function App() {
                               </div>
                             </div>
                             <div className="tb_icn__">
-                              <button className="bx_btn ">
+                              <button
+                                className="bx_btn"
+                                onClick={() => {
+                                  expenseEdit(x.key);
+                                }}
+                              >
                                 <svg
-                                  class="icn__i yellow_"
+                                  className="icn__i yellow_"
                                   viewBox="0 0 24 24"
                                   fill="currentColor"
                                   xmlns="../../external.html?link=http://www.w3.org/2000/svg"
@@ -254,11 +311,16 @@ function App() {
                                   <path d="M19 20H5a1 1 0 0 0 0 2h14a1 1 0 0 0 0-2z"></path>
                                   <path d="M5 18h.09l4.17-.38a2 2 0 0 0 1.21-.57l9-9a1.92 1.92 0 0 0-.07-2.71L16.66 2.6A2 2 0 0 0 14 2.53l-9 9a2 2 0 0 0-.57 1.21L4 16.91a1 1 0 0 0 .29.8A1 1 0 0 0 5 18zM15.27 4L18 6.73l-2 1.95L13.32 6zm-8.9 8.91L12 7.32l2.7 2.7-5.6 5.6-3 .28z"></path>
                                 </svg>
-                                {/* <img class="icn__i" src={pen} alt="" /> */}
+                                {/* <img className="icn__i" src={pen} alt="" /> */}
                               </button>
-                              <button className="bx_btn ">
+                              <button
+                                className="bx_btn "
+                                onClick={() => {
+                                  expenseDelete(x.key);
+                                }}
+                              >
                                 <svg
-                                  class="icn__i red_"
+                                  className="icn__i red_"
                                   viewBox="0 0 24 24"
                                   fill="currentColor"
                                   xmlns="../../external.html?link=http://www.w3.org/2000/svg"
