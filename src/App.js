@@ -7,8 +7,12 @@ import balance from "./svg/balance.svg";
 import expenses from "./svg/expenses.svg";
 
 function App() {
+  // All income, expense and pop state
   const [
     {
+      popDiv,
+      delIncome,
+      delExpense,
       incomeAmount,
       incomeTitle,
       expenseAmount,
@@ -18,9 +22,14 @@ function App() {
       incomeBalance,
       expenseBalance,
       balBalance,
+      incomeRem,
+      expenseRem,
     },
     setincome,
   ] = useState({
+    popDiv: false,
+    delIncome: false,
+    delExpense: false,
     incomeAmount: "",
     incomeTitle: "",
     expenseAmount: "",
@@ -30,23 +39,45 @@ function App() {
     incomeBalance: 0,
     expenseBalance: 0,
     balBalance: 0,
+    incomeRem: [],
+    expenseRem: [],
   });
 
+  // erro state for inputs
+  const [
+    {
+      incomeAmountError,
+      incomeTitleError,
+      expenseAmountError,
+      expenseTitletError,
+    },
+    setError,
+  ] = useState({
+    incomeAmountError: false,
+    incomeTitleError: false,
+    expenseAmountError: false,
+    expenseTitletError: false,
+  });
+
+  // Income Amount
   const iA = (e) => {
     let value = e.target.value;
     setincome((_) => ({ ..._, incomeAmount: value }));
   };
 
+  // Income Title
   const iT = (e) => {
     let value = e.target.value;
     setincome((_) => ({ ..._, incomeTitle: value }));
   };
 
+  // Expense Amount
   const eA = (e) => {
     let value = e.target.value;
     setincome((_) => ({ ..._, expenseAmount: value }));
   };
 
+  // Expense Title
   const eT = (e) => {
     let value = e.target.value;
     setincome((_) => ({ ..._, expenseTitle: value }));
@@ -91,10 +122,6 @@ function App() {
       return aa;
     }, 0);
     setincome((_) => ({ ..._, incomeBalance: aa }));
-    // return setincome((_) => ({
-    //   ..._,
-    //   balBalance: incomeBalance - expenseBalance,
-    // }));
   }, [incomeArray]);
 
   useEffect(() => {
@@ -111,7 +138,6 @@ function App() {
   }, [expenseBalance, incomeBalance]);
 
   const key_ = () => {
-    // return new Date().getTime();
     let res = "";
     let lenght = 8;
     let key =
@@ -155,22 +181,79 @@ function App() {
 
     setincome((_) => ({
       ..._,
-      incomeArray: remain,
+      popDiv: true,
+      delIncome: true,
+      incomeRem: remain,
     }));
   };
 
+  // Delete expense
   const expenseDelete = (key_) => {
     const remain = expenseArray.filter((one) => one.key !== key_);
 
     setincome((_) => ({
       ..._,
-      expenseArray: remain,
+      popDiv: true,
+      delExpense: true,
+      expenseRem: remain,
     }));
+  };
+
+  const del = () => {
+    if (delIncome === true) {
+      setincome((_) => ({
+        ..._,
+        incomeArray: incomeRem,
+        popDiv: false,
+        delIncome: false,
+      }));
+    } else if (delExpense === true) {
+      setincome((_) => ({
+        ..._,
+        expenseArray: expenseRem,
+        popDiv: false,
+        delExpense: false,
+      }));
+    }
   };
 
   return (
     <>
       <div className="container__">
+        {popDiv ? (
+          <div className="shadow_pop">
+            <div className="cenricQuest">
+              <h3 className="quest">
+                Are you sure you want to delete this item
+              </h3>
+              <div className="btn_holder">
+                <button
+                  className="btn_popbtn green__"
+                  onClick={() => {
+                    del();
+                  }}
+                >
+                  Yes
+                </button>
+                <button
+                  className="btn_popbtn red__"
+                  onClick={() => {
+                    setincome((_) => ({
+                      ..._,
+                      incomeRem: [],
+                      popDiv: false,
+                      delIncome: false,
+                    }));
+                  }}
+                >
+                  No
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : (
+          ""
+        )}
         <header className="hder__">
           <h3 className="titlehead__">Expense Tracker</h3>
         </header>
