@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "./App.scss";
-import { Calcfield } from "./components/calcfield/calcfield";
-import { SubForm } from "./components/formfield/SubForm";
+import Modal from "./components/modal";
+import Formfield from "./components/formfield";
+import Calcfield from "./components/calcfield";
+import Listarray from "./components/listarray/";
 import money from "./svg/money-transfer.svg";
 import balance from "./svg/balance.svg";
 import expenses from "./svg/expenses.svg";
@@ -89,12 +91,26 @@ function App() {
       amount: incomeAmount,
       title: incomeTitle,
     };
+
     if (incomeAmount.length && incomeTitle.length > 0) {
       setincome((_) => ({
         ..._,
         incomeArray: _.incomeArray.concat(single),
         incomeAmount: "",
         incomeTitle: "",
+      }));
+      clearError();
+    }
+    if (incomeAmount.length < 1) {
+      setError((_) => ({
+        ..._,
+        incomeAmountError: true,
+      }));
+    }
+    if (incomeTitle.length < 1) {
+      setError((_) => ({
+        ..._,
+        incomeTitleError: true,
       }));
     }
   };
@@ -105,15 +121,52 @@ function App() {
       amount: expenseAmount,
       title: expenseTitle,
     };
-    if (expenseAmount != null) {
+    if (expenseAmount.length && expenseTitle.length > 0) {
       setincome((_) => ({
         ..._,
         expenseArray: _.expenseArray.concat(single),
         expenseAmount: "",
         expenseTitle: "",
       }));
+      clearError();
+    }
+    if (expenseAmount.length < 1) {
+      setError((_) => ({
+        ..._,
+        expenseAmountError: true,
+      }));
+    }
+    if (expenseTitle.length < 1) {
+      setError((_) => ({
+        ..._,
+        expenseTitletError: true,
+      }));
     }
   };
+
+  const clearError = () => {
+    setError((_) => ({
+      incomeAmountError: false,
+      incomeTitleError: false,
+      expenseAmountError: false,
+      expenseTitletError: false,
+    }));
+  };
+
+  useEffect(() => {
+    // effect;
+    const timer = 5000;
+    let func;
+    clearTimeout(func);
+    return () => {
+      func = setTimeout(clearError, timer);
+    };
+  }, [
+    incomeAmountError,
+    incomeTitleError,
+    expenseAmountError,
+    expenseTitletError,
+  ]);
 
   useEffect(() => {
     let aa = 0;
@@ -216,67 +269,46 @@ function App() {
       }));
     }
   };
+  const delNot = () => {
+    setincome((_) => ({
+      ..._,
+      incomeRem: [],
+      popDiv: false,
+      delIncome: false,
+    }));
+  };
 
   return (
     <>
       <div className="container__">
-        {popDiv ? (
-          <div className="shadow_pop">
-            <div className="cenricQuest">
-              <h3 className="quest">
-                Are you sure you want to delete this item
-              </h3>
-              <div className="btn_holder">
-                <button
-                  className="btn_popbtn green__"
-                  onClick={() => {
-                    del();
-                  }}
-                >
-                  Yes
-                </button>
-                <button
-                  className="btn_popbtn red__"
-                  onClick={() => {
-                    setincome((_) => ({
-                      ..._,
-                      incomeRem: [],
-                      popDiv: false,
-                      delIncome: false,
-                    }));
-                  }}
-                >
-                  No
-                </button>
-              </div>
-            </div>
-          </div>
-        ) : (
-          ""
-        )}
+        <Modal condition={popDiv} delFunc={del} delNotFunc={delNot} />
         <header className="hder__">
           <h3 className="titlehead__">Expense Tracker</h3>
         </header>
         <div className="wrapset__">
           <div className="sd_inex">
             <div className="all_hld">
-              <SubForm
+              <Formfield
                 title="Enter income Amount and Description"
                 btnColor={"green__"}
                 amt={iA}
                 tle={iT}
                 setArr={allIncome}
-                incomeAmount={incomeAmount}
-                incomeTitle={incomeTitle}
+                Amount={incomeAmount}
+                Title={incomeTitle}
+                amountError={incomeAmountError}
+                TitleError={incomeTitleError}
               />
-              <SubForm
+              <Formfield
                 title="Enter Expense Amount and Description"
                 btnColor={"red__"}
                 amt={eA}
                 tle={eT}
                 setArr={allExpenses}
-                incomeAmount={expenseAmount}
-                incomeTitle={expenseTitle}
+                Amount={expenseAmount}
+                Title={expenseTitle}
+                amountError={expenseAmountError}
+                TitleError={expenseTitletError}
               />
             </div>
           </div>
@@ -304,123 +336,20 @@ function App() {
             <div className="adr__">
               <div className="adr__fg">
                 <div className="tbr__">
-                  {incomeArray.length > 0 ? (
-                    <div className="tb_net">
-                      <h3 className="title">Income List</h3>
-                      {incomeArray.map((x, index) => {
-                        return (
-                          <div className="sng_vt" key={x.key}>
-                            <div className="mn_ct_">
-                              <div className="id">{index + 1}</div>
-                              <div className="cont__r">
-                                <p className="amunt_ green_">
-                                  {"$" + x.amount}
-                                </p>
-                                <h2 className="title_">{x.title}</h2>
-                              </div>
-                            </div>
-                            <div className="tb_icn__">
-                              <button
-                                className="bx_btn "
-                                onClick={() => {
-                                  incomeEdit(x.key);
-                                }}
-                              >
-                                <svg
-                                  className="icn__i yellow_"
-                                  viewBox="0 0 24 24"
-                                  fill="currentColor"
-                                  xmlns="../../external.html?link=http://www.w3.org/2000/svg"
-                                >
-                                  <path d="M19 20H5a1 1 0 0 0 0 2h14a1 1 0 0 0 0-2z"></path>
-                                  <path d="M5 18h.09l4.17-.38a2 2 0 0 0 1.21-.57l9-9a1.92 1.92 0 0 0-.07-2.71L16.66 2.6A2 2 0 0 0 14 2.53l-9 9a2 2 0 0 0-.57 1.21L4 16.91a1 1 0 0 0 .29.8A1 1 0 0 0 5 18zM15.27 4L18 6.73l-2 1.95L13.32 6zm-8.9 8.91L12 7.32l2.7 2.7-5.6 5.6-3 .28z"></path>
-                                </svg>
-                                {/* <img className="icn__i" src={pen} alt="" /> */}
-                              </button>
-                              <button
-                                className="bx_btn"
-                                onClick={() => {
-                                  incomeDelete(x.key);
-                                }}
-                              >
-                                <svg
-                                  className="icn__i red_"
-                                  viewBox="0 0 24 24"
-                                  fill="currentColor"
-                                  xmlns="../../external.html?link=http://www.w3.org/2000/svg"
-                                >
-                                  <path d="M21 6h-5V4.33A2.42 2.42 0 0 0 13.5 2h-3A2.42 2.42 0 0 0 8 4.33V6H3a1 1 0 0 0 0 2h1v11a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V8h1a1 1 0 0 0 0-2zM10 4.33c0-.16.21-.33.5-.33h3c.29 0 .5.17.5.33V6h-4zM18 19a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V8h12z"></path>
-                                  <path d="M9 17a1 1 0 0 0 1-1v-4a1 1 0 0 0-2 0v4a1 1 0 0 0 1 1z"></path>
-                                  <path d="M15 17a1 1 0 0 0 1-1v-4a1 1 0 0 0-2 0v4a1 1 0 0 0 1 1z"></path>
-                                </svg>
-                              </button>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  ) : (
-                    ""
-                  )}
+                  {/* income list */}
+                  <Listarray
+                    array={incomeArray}
+                    editFunc={incomeEdit}
+                    deleteFunc={incomeDelete}
+                  />
                 </div>
-                {/* expense */}
+                {/* expense list*/}
                 <div className="tbr__">
-                  {expenseArray.length > 0 ? (
-                    <div className="tb_net">
-                      <h3 className="title">Expense List</h3>
-                      {expenseArray.map((x, index) => {
-                        return (
-                          <div className="sng_vt" key={x.key}>
-                            <div className="mn_ct_">
-                              <div className="id">{index + 1}</div>
-                              <div className="cont__r">
-                                <p className="amunt_ red_">{"$" + x.amount}</p>
-                                <h2 className="title_">{x.title}</h2>
-                              </div>
-                            </div>
-                            <div className="tb_icn__">
-                              <button
-                                className="bx_btn"
-                                onClick={() => {
-                                  expenseEdit(x.key);
-                                }}
-                              >
-                                <svg
-                                  className="icn__i yellow_"
-                                  viewBox="0 0 24 24"
-                                  fill="currentColor"
-                                  xmlns="../../external.html?link=http://www.w3.org/2000/svg"
-                                >
-                                  <path d="M19 20H5a1 1 0 0 0 0 2h14a1 1 0 0 0 0-2z"></path>
-                                  <path d="M5 18h.09l4.17-.38a2 2 0 0 0 1.21-.57l9-9a1.92 1.92 0 0 0-.07-2.71L16.66 2.6A2 2 0 0 0 14 2.53l-9 9a2 2 0 0 0-.57 1.21L4 16.91a1 1 0 0 0 .29.8A1 1 0 0 0 5 18zM15.27 4L18 6.73l-2 1.95L13.32 6zm-8.9 8.91L12 7.32l2.7 2.7-5.6 5.6-3 .28z"></path>
-                                </svg>
-                                {/* <img className="icn__i" src={pen} alt="" /> */}
-                              </button>
-                              <button
-                                className="bx_btn "
-                                onClick={() => {
-                                  expenseDelete(x.key);
-                                }}
-                              >
-                                <svg
-                                  className="icn__i red_"
-                                  viewBox="0 0 24 24"
-                                  fill="currentColor"
-                                  xmlns="../../external.html?link=http://www.w3.org/2000/svg"
-                                >
-                                  <path d="M21 6h-5V4.33A2.42 2.42 0 0 0 13.5 2h-3A2.42 2.42 0 0 0 8 4.33V6H3a1 1 0 0 0 0 2h1v11a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V8h1a1 1 0 0 0 0-2zM10 4.33c0-.16.21-.33.5-.33h3c.29 0 .5.17.5.33V6h-4zM18 19a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V8h12z"></path>
-                                  <path d="M9 17a1 1 0 0 0 1-1v-4a1 1 0 0 0-2 0v4a1 1 0 0 0 1 1z"></path>
-                                  <path d="M15 17a1 1 0 0 0 1-1v-4a1 1 0 0 0-2 0v4a1 1 0 0 0 1 1z"></path>
-                                </svg>
-                              </button>
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  ) : (
-                    ""
-                  )}
+                  <Listarray
+                    array={expenseArray}
+                    editFunc={expenseEdit}
+                    deleteFunc={expenseDelete}
+                  />
                 </div>
               </div>
             </div>

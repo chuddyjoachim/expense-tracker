@@ -38,6 +38,10 @@
         }
       }
     }
+    & .form_error {
+      padding: 0.2rem 0.6rem 0;
+      color: red;
+    }
     & .submt_bx {
       position: relative;
       display: flex;
