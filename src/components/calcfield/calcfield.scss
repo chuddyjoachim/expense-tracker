@@ -1,3 +1,5 @@
+@import '../../style/_dist/mixins';
+
 .wrapset_ {
   position: relative;
   width: 33.333%;
@@ -25,11 +27,22 @@
             position: relative;
             font-size: 1.3rem;
             margin: 0.2rem 0;
+            @include mediamax(499px){
+              font-size: 1rem;
+            }
           }
           & .icon {
             height: 80px;
             // border: 1px solid green;
             width: 100%;
+            display: flex;
+            justify-content: center;
+            @include mediamax(958px){
+              height: 60px;
+            }
+            @include mediamax(499px){
+              height: 45px;
+            }
             & img {
               display: block;
               max-width: 100%;
